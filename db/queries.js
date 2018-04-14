@@ -5,16 +5,17 @@ const options = {
 };
 
 const pgp = require('pg-promise')(options);
-const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/narwhal_messages';
-const db = pgp(connectionString);
-
+const messagesConnectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/narwhal_messages';
+const usersConnectionString = process.env.USERS_DATABASE_URL || 'postgres://localhost:5432/narwhal_users';
+const dbMessages = pgp(messagesConnectionString);
+const dbUsers = pgp(usersConnectionString);
 
 // Return search results
 
 var search = {
   searchResults: async (query, topicId) => {
     try {
-      const results = await db.any('SELECT id, message_text, topic_id, author_id, create_date, last_update_date ' +
+      const results = await dbMessages.any('SELECT id, message_text, topic_id, author_id, create_date, last_update_date ' +
         'FROM topic_message ' + 
         'WHERE topic_id = ${topicId} AND message_text_tokens @@ to_tsquery(${query}) ' + 
         'ORDER BY create_date LIMIT 200', {query: query, topicId: topicId}
@@ -52,5 +53,5 @@ var search = {
 }
 
 module.exports = {
-    search: searchResults
+    search: search
 };
