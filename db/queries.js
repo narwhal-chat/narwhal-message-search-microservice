@@ -16,7 +16,7 @@ var search = {
     try {
       const results = await db.any('SELECT id, message_text, topic_id, author_id, create_date, last_update_date ' +
         'FROM topic_message ' + 
-        'WHERE document_tokens @@ to_tsquery(${query}) ' + 
+        'WHERE message_text_tokens @@ to_tsquery(${query}) ' + 
         'ORDER BY create_date LIMIT 200', {query: query}
       ); 
 
