@@ -12,12 +12,12 @@ const db = pgp(connectionString);
 // Return search results
 
 var search = {
-  searchResults: async (query) => {
+  searchResults: async (query, topicId) => {
     try {
       const results = await db.any('SELECT id, message_text, topic_id, author_id, create_date, last_update_date ' +
         'FROM topic_message ' + 
-        'WHERE message_text_tokens @@ to_tsquery(${query}) ' + 
-        'ORDER BY create_date LIMIT 200', {query: query}
+        'WHERE topic_id = ${topicId} AND message_text_tokens @@ to_tsquery(${query}) ' + 
+        'ORDER BY create_date LIMIT 200', {query: query, topicId: topicId}
       ); 
 
       const userIds = results.map((message) => {
