@@ -10,9 +10,8 @@ const usersConnectionString = process.env.USERS_DATABASE_URL || 'postgres://loca
 const dbMessages = pgp(messagesConnectionString);
 const dbUsers = pgp(usersConnectionString);
 
-// Return search results
-
-var search = {
+const search = {
+  // Return search results
   searchResults: async (query, topicId) => {
     try {
       const results = await dbMessages.any('SELECT id, message_text, topic_id, author_id, create_date, last_update_date ' +
